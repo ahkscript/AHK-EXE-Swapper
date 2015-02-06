@@ -7,3 +7,4 @@
 *.tmp.*
 Setup.ahk
 !Setup*.exe
+!AHK-EXE-Swapper.exe
