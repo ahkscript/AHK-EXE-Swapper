@@ -1,14 +1,21 @@
 # AHK-EXE-Swapper
 A Utility to easily manage which version of AutoHotkey that uncompiled scripts use.
 
-##What?
+<table><tr><td rowspan="2" width="300px">
+<img src="https://github.com/ahkscript/AHK-EXE-Swapper/blob/master/screenshot.png"/>
+</td><td>
+<h3>What?</h3>
 This tool allows you to easily manage which *Version* (As in release - such as `1.1.19.011`) of Autohotkey.exe that scripts use.  
 It is aware of the *full* version number of EXEs - as in `1.1.19.01-19+ga3104d4`)
 It also allows easy swapping in and out of test builds. (Identified by the longer *version* as above)  
 Furthermore, duplicates the AHK installer's functionality of swapping *Variants* (ANSI/Unicode, x86/x64).
-
-##Why?
+</td></tr>
+<tr><td>
+<h3>Why?</h3>
 Because whilst editors such as [SciTE4AutoHotkey](https://github.com/fincs/SciTE4AutoHotkey) allow you to choose which EXE to use when you run a script while editing them, there is no easy way to swap out EXE versions beyond the AHK installer, which only swaps *variants*, not *versions* (Apart from upgrading).
+</td></tr>
+</table>
+
 
 ##How?...
 ####...Do I get it?
