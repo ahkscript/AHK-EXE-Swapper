@@ -11,9 +11,10 @@ Furthermore, duplicates the AHK installer's functionality of swapping *Variants*
 Because whilst editors such as [SciTE4AutoHotkey](https://github.com/fincs/SciTE4AutoHotkey) allow you to choose which EXE to use when you run a script while editing them, there is no easy way to swap out EXE versions beyond the AHK installer, which only swaps *variants*, not *versions* (Apart from upgrading).
 
 ##How?...
+####...Do I get it?
+If you are an end-user, simply download AHK-EXE-Swapper.exe from [here](https://github.com/evilC/AHK-EXE-Swapper/blob/master/AHK-EXE-Swapper.exe). You may place it anywhere.
 ####...Do I use it?
-If you are an end-user, it is strongly recommended you run the EXE version. You do not need the *.ahk* version of the script in this case.  
-Run the script to open the GUI.  
+Double click the script to open the GUI.  
 This script maintains a *Library* of versions which you have imported or backed up which it stores in the folder *AHK-EXE-Swapper* in your AutoHotkey folder (*C:\Program Files\AutoHotkey*).  
 
 **Library Management**
