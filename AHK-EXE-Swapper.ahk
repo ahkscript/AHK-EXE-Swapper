@@ -1,6 +1,9 @@
 /*
 ToDo:
 * More Error Checking
+
+* Test with UAC on (No Admin Mode). Probably does not work.
+
 */
 #NoEnv
 #SingleInstance force
