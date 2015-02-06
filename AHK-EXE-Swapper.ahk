@@ -1,10 +1,11 @@
 /*
 ToDo:
+* More Error Checking
 */
 #NoEnv
 #SingleInstance force
 
-MsgBox % "Starting with " A_AhkPath
+;MsgBox % "Starting with " A_AhkPath
 
 MismatchWarning := 0		; Is there a version mismatch between A32/U32/U64 versions and / or AutoHotkey.exe?
 CurrentVersion := 0			; Current version of AutoHotkey.exe in Program Files
@@ -53,18 +54,19 @@ Gui, Add, Button, ys w%GUI_THIRD_WIDTH% Center Section gSwapVariantU32 hwndVaria
 Gui, Add, Button, ys w%GUI_THIRD_WIDTH% Center gSwapVariantU64 hwndVariantButtonU64, Unicode 64
 
 ; Available versions
-Gui, Add, Text, xm yp+50 w%GUI_WIDTH% Center, Available Versions
+Gui, Add, Text, xm yp+50 w%GUI_WIDTH% Center, Available Versions for Swapping
+Gui, Add, Button, xm w%GUI_WIDTH% Center gBackupVersion, Backup Current Version
 Gui, Add, ListView, hwndLVSwapFolder w%GUI_WIDTH% h200 AltSubmit +Grid, Version
 LV_ModifyCol(1, 275)	; Try and avoid horiz scrollbar
 
-Gui, Add, Button, w%GUI_WIDTH% Center gSwapVersion, Swap Version
+Gui, Add, Button, xm w%GUI_WIDTH% Center gSwapVersion, Replace with selected version
 
 ; Import
-Gui, Add, Text, xm yp+40 w%GUI_WIDTH% Center, Import folder
+Gui, Add, Text, xm yp+40 w%GUI_WIDTH% Center, Import folder - Place test release zips in here
 Gui, Add, ListView, hwndLVImportList AltSubmit w%GUI_WIDTH% h100 +Grid, Filename
 LV_ModifyCol(1, 275)	; Try and avoid horiz scrollbar
 ;LV_ModifyCol(2, 95)
-Gui, Add, Button, xm w%GUI_WIDTH% Center Section gImportFile, Import
+Gui, Add, Button, xm w%GUI_WIDTH% Center Section gImportFile, Import selected zip
 
 Gui, Add, Button, xm yp+40 w%GUI_WIDTH% Center gRefresh, Refresh All
 ;LV_ModifyCol(1, 100)
@@ -101,6 +103,14 @@ SwapVersion:
 	if (swap_version != "version"){
 		; ToDo: Why does it default to title row - "version" ?
 		SwapVersion(swap_version)
+	}
+	return
+
+BackupVersion:
+	if (BackupVersion()){
+		HighBeep()
+	} else {
+		LowBeep()
 	}
 	return
 
@@ -285,6 +295,7 @@ BackupVersion(){
 	FileCopy, % AhkFolder "\AutoHotkeyU32.exe", % new_folder
 	FileCopy, % AhkFolder "\AutoHotkeyU64.exe", % new_folder
 	BuildSwapList()
+	return 1
 }
 
 ; Deletes an array of files.
