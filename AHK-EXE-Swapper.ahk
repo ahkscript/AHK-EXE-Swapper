@@ -39,6 +39,7 @@ if (!A_IsCompiled){
 GUI_WIDTH := 300
 GROUPBOX_WIDTH := GUI_WIDTH - 10
 GUI_HALF_WIDTH := (GUI_WIDTH / 2) - 10
+COLUMN_TWO := ( GUI_WIDTH / 2 ) + 20
 GUI_THIRD_WIDTH := (GUI_WIDTH / 3) - 10
 
 ; Current AHK Version
@@ -72,6 +73,9 @@ LV_ModifyCol(1, 275)	; Try and avoid horiz scrollbar
 Gui, Add, Button, xm w%GUI_WIDTH% Center Section gImportFile, Import selected zip
 
 Gui, Add, Button, xm yp+40 w%GUI_WIDTH% Center gRefresh, Refresh All
+
+Gui, Add, Button, xm yp+40 w%GUI_HALF_WIDTH% Center gOpenAhkFolder, Open AHK folder
+Gui, Add, Button, x%COLUMN_TWO% yp w%GUI_HALF_WIDTH% Center gOpenScriptFolder, Open Script folder
 ;LV_ModifyCol(1, 100)
 Gui, Show, ,AHK-EXE-Swapper
 
@@ -98,6 +102,14 @@ Refresh:
 	CheckCurrentVersion()
 	BuildSwapList()
 	BuildImportList()
+	return
+
+OpenAhkFolder:
+	run, % AhkFolder
+	return
+	
+OpenScriptFolder:
+	run, % A_ScriptDir
 	return
 
 SwapVersion:
