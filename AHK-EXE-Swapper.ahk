@@ -8,6 +8,7 @@ ToDo:
 #NoEnv
 #SingleInstance force
 
+;MsgBox % A_AhkVersion
 ;MsgBox % "Starting with " A_AhkPath
 
 MismatchWarning := 0		; Is there a version mismatch between A32/U32/U64 versions and / or AutoHotkey.exe?
@@ -235,7 +236,9 @@ SwapVersion(version){
 	
 	current_variant := CurrentVariant
 	if (current_variant = 0){
-		current_variant := "A32"
+		; Current type could not be found, so we need to arbitrarily pick one.
+		; A32 is not present in v2, so let's go with U32 as the most compatible
+		current_variant := "U32"
 	}
 	
 	if (CurrentVersion != 0){
@@ -410,7 +413,8 @@ CheckVersionsMatch(folder){
 			}
 		}
 	}
-	if (Count = 3){
+	if (Count = 3 || (Count = 2 && Types_checked.a32 = 0  ) ){
+		; A32 version may not be present on v2
 		return found_version
 	}
 	return 0
@@ -488,12 +492,23 @@ GetInfo(path, mode){
 	if (!FileExist(path)){
 		return 0
 	}
-	script_path := A_ScriptDir "\get_info.ahk"
-	temp_file := "AHK-EXE-Swapper.info.txt"
-	command := path " " script_path " " temp_file " " mode
-	RunWait, % command
-	FileRead, ret, % temp_file
-	FileDelete, % temp_file
+	if (mode = "version"){
+		cmd := "FileVersion"
+	} else if (mode = "variant"){
+		cmd := "FileDescription"
+	} else {
+		return 0
+	}
+	info := FileGetVersionInfo_AW(path,cmd)
+	;info := FileGetVersionInfo_AW(path,"FileDescription")
+	if (mode = "variant"){
+		info := StrSplit(info, A_Space)
+		type := SubStr(info[2],1,1)
+		ret := type StrSplit(info[3],"-")[1]
+	} else {
+		ret := info
+	}
+	
 	return ret
 }
 
@@ -590,3 +605,28 @@ CreateZip(n)	; Create empty Zip file
 	ZIPFile.close()
 }
 ;; ---------    FUNCTION END   ------------------------------------
+
+FileGetVersionInfo_AW( peFile="", StringFileInfo="", Delimiter="|") {   ; Written by SKAN
+ ; www.autohotkey.com/forum/viewtopic.php?p=233188#233188  CD:24-Nov-2008 / LM:27-Oct-2010
+ Static CS, HexVal, Sps="                        ", DLL="Version\", StrGet="StrGet"
+ If ( CS = "" )
+  CS := A_IsUnicode ? "W" : "A", HexVal := "msvcrt\s" (A_IsUnicode ? "w": "" ) "printf"
+ If ! FSz := DllCall( DLL "GetFileVersionInfoSize" CS , Str,peFile, UInt,0 )
+   Return "", DllCall( "SetLastError", UInt,1 )
+ VarSetCapacity( FVI, FSz, 0 ), VarSetCapacity( Trans,8 * ( A_IsUnicode ? 2 : 1 ) )
+ DllCall( DLL "GetFileVersionInfo" CS, Str,peFile, Int,0, UInt,FSz, UInt,&FVI )
+ If ! DllCall( DLL "VerQueryValue" CS
+    , UInt,&FVI, Str,"\VarFileInfo\Translation", UIntP,Translation, UInt,0 )
+   Return "", DllCall( "SetLastError", UInt,2 )
+ If ! DllCall( HexVal, Str,Trans, Str,"%08X", UInt,NumGet(Translation+0) )
+   Return "", DllCall( "SetLastError", UInt,3 )
+ Loop, Parse, StringFileInfo, %Delimiter%
+ { subBlock := "\StringFileInfo\" SubStr(Trans,-3) SubStr(Trans,1,4) "\" A_LoopField
+   If ! DllCall( DLL "VerQueryValue" CS, UInt,&FVI, Str,SubBlock, UIntP,InfoPtr, UInt,0 )
+     Continue
+   Value := ( A_IsUnicode ? %StrGet%( InfoPtr, DllCall( "lstrlen" CS, UInt,InfoPtr ) )
+         :  DllCall( "MulDiv", UInt,InfoPtr, Int,1, Int,1, "Str"  ) )
+   Info  .= Value ? ( (InStr(StringFileInfo,Delimiter) ? SubStr( A_LoopField Sps,1,24 ) . A_Tab : "") . Value . Delimiter ) :
+ } StringTrimRight, Info, Info, 1
+Return Info
+}
