@@ -256,18 +256,14 @@ SwapVersion(version){
 	
 	;MsgBox % "Swapping to " version " / " current_variant
 	if (DeleteFile(AhkExe)){
-		alternate_exes := [AhkFolder "\AutoHotkeyA32.exe", AhkFolder "\AutoHotkeyU32.exe", AhkFolder "\AutoHotkeyU64.exe"]
+		static alternate_exes := [AhkFolder "\AutoHotkeyA32.exe", AhkFolder "\AutoHotkeyU32.exe", AhkFolder "\AutoHotkeyU64.exe"]
+		static h_dlls := [AhkFolder "\msvcr100A32.dll", AhkFolder "\msvcr100U32.dll", AhkFolder "\msvcr100U64.dll"]
 		if (DeleteFiles(alternate_exes)){
+			DeleteFiles(h_dlls)
 			; Old AHK Deleted, copy files
 			FileCopy, % VersionFolder "\" Version "\*.*", % AhkFolder
 			
-			; Put back current Variant as AutoHotkey.exe
-			src := VersionFolder "\" Version "\Autohotkey" current_variant ".exe"
-			FileCopy, % src, % AhkExe
-			
-			CheckCurrentVersion()
-			HighBeep()
-			return 1
+			return SwapVariant(current_variant)
 		} else {
 			MsgBox % "Warning!`n`nCould not delete the Alternate Exes!"
 			CheckCurrentVersion()
@@ -285,7 +281,9 @@ SwapVariant(Variant){
 	
 	if (!MismatchWarning){
 		if (DeleteFile(AhkExe)){
-			FileCopy, % AhkFolder "\AutoHotkey" Variant ".exe", % AhkExe
+			FileCopy, % AhkFolder "\AutoHotkey" Variant ".exe", % AhkExe, 1
+			; Copy appropriate AHK_H dll, if present
+			FileCopy, % AhkFolder "\msvcr100" Variant ".dll", % AhkFolder "\msvcr100.dll", 1
 			CheckCurrentVersion()
 			HighBeep()
 			return 1
@@ -469,8 +467,14 @@ ConformTestBuildFileNames(folder){
 ConformHFileNames(folder){
 	f := folder "\ahkdll-v1-release-master\"
 	FileMove, % f "Win32a\AutoHotkey.exe", % folder "\AutoHotkeyA32.exe" 
+	FileMove, % f "Win32a\msvcr100.dll", % folder "\msvcr100A32.dll" 
+	
 	FileMove, % f "Win32w\AutoHotkey.exe", % folder "\AutoHotkeyU32.exe" 
+	FileMove, % f "Win32w\msvcr100.dll", % folder "\msvcr100U32.dll" 
+	
 	FileMove, % f "x64w\AutoHotkey.exe", % folder "\AutoHotkeyU64.exe"
+	FileMove, % f "x64w\msvcr100.dll", % folder "\msvcr100U64.dll" 
+	
 	FileRemoveDir, % f
 }
 
