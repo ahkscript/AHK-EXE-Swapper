@@ -534,9 +534,21 @@ GetInfo(path, mode){
 		type := SubStr(info[2],1,1)
 		ret := type StrSplit(info[3],"-")[1]
 	} else {
-		ret := info
+		ret := BuildVersionString(info)
 	}
 	
+	return ret
+}
+
+BuildVersionString(info){
+	tmp := StrSplit(info, "-")
+	if (SubStr(tmp[2], 1, 1) == "H"){
+		hbuild := SubStr(tmp[2], 2)
+		;ret := "AHK_H " tmp[1] " (Build " hbuild ")"
+		ret := tmp[1] "   (AHK_H v" hbuild ")"
+	} else {
+		ret := info "   (AHK_L)" 
+	}
 	return ret
 }
 
