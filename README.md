@@ -6,7 +6,8 @@ A Utility to easily manage which version of AutoHotkey that uncompiled scripts u
 </td><td>
 <h3>What?</h3>
 This tool allows you to easily manage which *Version* (As in release - such as <em>1.1.19.011</em>) of Autohotkey.exe that scripts use.  
-It is aware of the *full* version number of EXEs - as in <em>1.1.19.01-19+ga3104d4</em>)
+It is aware of the *long* version number of EXEs - as in <em>1.1.19.01-19+ga3104d4</em>)
+It is capable of operating on AHK v1 or v2 EXEs, although support is limited for v2 importing at this time.
 It also allows easy swapping in and out of test builds. (Identified by the longer *version* as above)  
 Furthermore, duplicates the AHK installer's functionality of swapping *Variants* (ANSI/Unicode, x86/x64).
 </td></tr>
