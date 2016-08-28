@@ -11,6 +11,8 @@ ToDo:
 ;MsgBox % A_AhkVersion
 ;MsgBox % "Starting with " A_AhkPath
 
+DebugMode := 0
+
 MismatchWarning := 0		; Is there a version mismatch between A32/U32/U64 versions and / or AutoHotkey.exe?
 CurrentVersion := 0			; Current version of AutoHotkey.exe in Program Files
 CurrentVariant := 0			; Current variant of Autohotkey.exe in Program Files
@@ -24,11 +26,12 @@ ImportFolder := SwapFolder . "\Import"
 VersionFolder := SwapFolder . "\Versions"
 GetInternalExe() ; Set InternalExe
 
-if (!A_IsCompiled){
+if (!A_IsCompiled && !DebugMode){
 	if (A_AhkPath = AhkExe){
-		; Run as un-compiled using normal EXE
+		; Run as un-compiled using Internal EXE
 		if (InternalExe != 0){
-			Run, % InternalExe " " A_ScriptFullPath
+			cmd := InternalExe " """ A_ScriptFullPath """"
+			Run, % cmd
 			ExitApp
 		} else {
 			MsgBox % "Cannot run as uncompiled without an Internal Exe. quitting..."
