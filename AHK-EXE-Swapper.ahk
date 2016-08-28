@@ -350,12 +350,17 @@ ImportFile(file){
 	file := ImportFolder "\" file
 	working_folder := ImportFolder "\Working"
 	; Delete any files in working folder
-	FileDelete, % working_folder "\*.*"
+	RecreateFolder(working_folder)
 	; Unzip to working folder
 	SmartZip(zip, working_folder)
 	; Wait? ToDo: What if disk is not spun up etc?
 	Sleep 100
-	ConformTestBuildFileNames(working_folder)
+	fork := GetAHKFork(working_folder)
+	if (fork = "h"){
+		ConformHFileNames(working_folder)
+	} else {
+		ConformTestBuildFileNames(working_folder)
+	}
 	ver := CheckVersionsMatch(working_folder)
 	if (ver != 0){
 		; All good, move to new home
@@ -370,6 +375,18 @@ ImportFile(file){
 		HighBeep()
 		BuildSwapList()
 	}
+}
+
+RecreateFolder(folder){
+	FileRemoveDir, % folder, 1
+	FileCreateDir, % folder
+}
+
+GetAHKFork(working_folder){
+	if (FileExist(working_folder "\ahkdll-v1-release-master")){
+		return "H"
+	}
+	return "L"
 }
 
 ; Scans the import folder for zips to import
@@ -439,6 +456,14 @@ ConformTestBuildFileNames(folder){
 		Total++
 	}
 	
+}
+
+ConformHFileNames(folder){
+	f := folder "\ahkdll-v1-release-master\"
+	FileMove, % f "Win32a\AutoHotkey.exe", % folder "\AutoHotkeyA32.exe" 
+	FileMove, % f "Win32w\AutoHotkey.exe", % folder "\AutoHotkeyU32.exe" 
+	FileMove, % f "x64w\AutoHotkey.exe", % folder "\AutoHotkeyU64.exe"
+	FileRemoveDir, % f
 }
 
 ; Tries to rename ONE file using a wildcard (eg _a.exe to AutoHotkeyA32.exe)
