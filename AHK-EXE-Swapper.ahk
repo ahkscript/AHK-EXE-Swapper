@@ -11,7 +11,7 @@ ToDo:
 ;MsgBox % A_AhkVersion
 ;MsgBox % "Starting with " A_AhkPath
 
-DebugMode := 0
+DebugMode := 1
 
 MismatchWarning := 0		; Is there a version mismatch between A32/U32/U64 versions and / or AutoHotkey.exe?
 CurrentVersion := 0			; Current version of AutoHotkey.exe in Program Files
@@ -27,20 +27,22 @@ VersionFolder := SwapFolder . "\Versions"
 GetInternalExe() ; Set InternalExe
 
 ; If we do not have admin rights and cannot write in the AHK folder, then try elevating to admin.
-if (!A_IsAdmin && !CheckAHKFolderWritableStatus()){
-	RunAsAdmin()
-}
+If (!DebugMode){
+	if (!A_IsAdmin && !CheckAHKFolderWritableStatus()){
+		RunAsAdmin()
+	}
 
-if (!A_IsCompiled && !DebugMode){
-	if (A_AhkPath = AhkExe){
-		; Run as un-compiled using Internal EXE
-		if (InternalExe != 0){
-			cmd := InternalExe " """ A_ScriptFullPath """"
-			Run, % cmd
-			ExitApp
-		} else {
-			MsgBox % "Cannot run as uncompiled without an Internal Exe. quitting..."
-			ExitApp
+	if (!A_IsCompiled){
+		if (A_AhkPath = AhkExe){
+			; Run as un-compiled using Internal EXE
+			if (InternalExe != 0){
+				cmd := InternalExe " """ A_ScriptFullPath """"
+				Run, % cmd
+				ExitApp
+			} else {
+				MsgBox % "Cannot run as uncompiled without an Internal Exe. quitting..."
+				ExitApp
+			}
 		}
 	}
 }
@@ -256,8 +258,8 @@ SwapVersion(version){
 	
 	;MsgBox % "Swapping to " version " / " current_variant
 	if (DeleteFile(AhkExe)){
-		static alternate_exes := [AhkFolder "\AutoHotkeyA32.exe", AhkFolder "\AutoHotkeyU32.exe", AhkFolder "\AutoHotkeyU64.exe"]
-		static h_dlls := [AhkFolder "\msvcr100A32.dll", AhkFolder "\msvcr100U32.dll", AhkFolder "\msvcr100U64.dll"]
+		alternate_exes := [AhkFolder "\AutoHotkeyA32.exe", AhkFolder "\AutoHotkeyU32.exe", AhkFolder "\AutoHotkeyU64.exe"]
+		h_dlls := [AhkFolder "\msvcr100A32.dll", AhkFolder "\msvcr100U32.dll", AhkFolder "\msvcr100U64.dll", AhkFolder "\msvcr100.dll"]
 		if (DeleteFiles(alternate_exes)){
 			DeleteFiles(h_dlls)
 			; Old AHK Deleted, copy files
