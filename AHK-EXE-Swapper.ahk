@@ -12,6 +12,7 @@ ToDo:
 ;MsgBox % "Starting with " A_AhkPath
 
 DebugMode := 1
+Version := "V1.1"
 
 MismatchWarning := 0		; Is there a version mismatch between A32/U32/U64 versions and / or AutoHotkey.exe?
 CurrentVersion := 0			; Current version of AutoHotkey.exe in Program Files
@@ -88,7 +89,7 @@ Gui, Add, Button, xm yp+40 w%GUI_WIDTH% Center gRefresh, Refresh All
 Gui, Add, Button, xm yp+40 w%GUI_HALF_WIDTH% Center gOpenAhkFolder, Open AHK folder
 Gui, Add, Button, x%COLUMN_TWO% yp w%GUI_HALF_WIDTH% Center gOpenScriptFolder, Open Script folder
 ;LV_ModifyCol(1, 100)
-Gui, Show, ,AHK-EXE-Swapper
+Gui, Show, ,AHK-EXE-Swapper %version%
 
 ; Start Up
 CheckCurrentVersion()
@@ -391,7 +392,7 @@ RecreateFolder(folder){
 }
 
 GetAHKFork(working_folder){
-	if (FileExist(working_folder "\ahkdll-v1-release-master")){
+	if (FileExist(working_folder "\ahkdll-v1-release-master") || FileExist(working_folder "\ahkdll-v2-release-master")){
 		return "H"
 	}
 	return "L"
@@ -468,16 +469,26 @@ ConformTestBuildFileNames(folder){
 
 ConformHFileNames(folder){
 	f := folder "\ahkdll-v1-release-master\"
-	FileMove, % f "Win32a\AutoHotkey.exe", % folder "\AutoHotkeyA32.exe" 
-	FileMove, % f "Win32a\msvcr100.dll", % folder "\msvcr100A32.dll" 
+	if (FileExist(folder "\ahkdll-v2-release-master")) {
+		f := folder "\ahkdll-v2-release-master\"
+	}
+	
+	if (FileExist(folder "\ahkdll-v1-release-master")) {
+	    ; ANSI Version not available anymore in V2 
+		FileMove, % f "Win32a\AutoHotkey.exe", % folder "\AutoHotkeyA32.exe" 
+		FileMove, % f "Win32a\msvcr100.dll", % folder "\msvcr100A32.dll" 
+		FileMove, % f "Win32a\AutoHotkey.dll", % folder "\AutoHotkeyA324.dll" 	
+	}
 	
 	FileMove, % f "Win32w\AutoHotkey.exe", % folder "\AutoHotkeyU32.exe" 
-	FileMove, % f "Win32w\msvcr100.dll", % folder "\msvcr100U32.dll" 
+	FileMove, % f "Win32w\msvcr100.dll", % folder "\msvcr100U32.dll"
+	FileMove, % f "Win32w\AutoHotkey.dll", % folder "\AutoHotkeyU32.dll" 	
 	
 	FileMove, % f "x64w\AutoHotkey.exe", % folder "\AutoHotkeyU64.exe"
 	FileMove, % f "x64w\msvcr100.dll", % folder "\msvcr100U64.dll" 
+	FileMove, % f "x64w\AutoHotkey.dll", % folder "\AutoHotkeyU64.dll" 
 	
-	FileRemoveDir, % f
+	FileRemoveDir, % f, 1
 }
 
 ; Tries to rename ONE file using a wildcard (eg _a.exe to AutoHotkeyA32.exe)
