@@ -20,8 +20,27 @@ InternalExe := 0			; Path to the internal EXE, or 0 if unavailable
 
 EnvGet, AhkFolder, ProgramW6432
 AhkFolder .= "\AutoHotkey"
-AhkExe := AhkFolder "\AutoHotkey.exe"
 SwapFolder := AhkFolder . "\AHK-EXE-Swapper"
+if (FileExist("AHK-EXE-Swapper.ini")) { ; Read Data from INI-File, if there is any
+	IniRead, AhkFolder, AHK-EXE-Swapper.ini, Directory, AutoHotkey, AhkFolder 
+	IniRead, SwapFolder, AHK-EXE-Swapper.ini, Directory, AHK-EXE-Swapper, SwapFolder 
+}
+
+if (!(FileExist(AhkFolder))) { ; Does AHK-Directory exist?
+	FileSelectFile, AhkPath, 1, %A_WorkingDir% \Autohotkey.exe ,Select current AutoHotkey.exe,Autohotkey.exe
+	SplitPath, AhkPath, AhkExe, AhkFolder
+}
+
+if ((!FileExist(SwapFolder))) { ; Does Working directory read from INI-File exist?
+	FileSelectFolder, SwapFolder, %A_WorkingDir% ,0, Select working directory for AHK-EXE-Swapper.,AHK-EXE-Swapper
+}
+
+if (!FileExist("AHK-EXE-Swapper.ini")) {  ; Write INI-File if it does not exist
+	IniWrite, %AhkFolder%, AHK-EXE-Swapper.ini, Directory, AutoHotkey
+	IniWrite, %SwapFolder%, AHK-EXE-Swapper.ini, Directory, AHK-EXE-Swapper
+}
+
+AhkExe := AhkFolder "\AutoHotkey.exe"
 ImportFolder := SwapFolder . "\Import"
 VersionFolder := SwapFolder . "\Versions"
 GetInternalExe() ; Set InternalExe
