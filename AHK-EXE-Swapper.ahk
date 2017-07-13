@@ -12,7 +12,7 @@ ToDo:
 ;MsgBox % "Starting with " A_AhkPath
 
 DebugMode := 1
-Version := "V1.1"
+Version := "V1.2"
 
 MismatchWarning := 0		; Is there a version mismatch between A32/U32/U64 versions and / or AutoHotkey.exe?
 CurrentVersion := 0			; Current version of AutoHotkey.exe in Program Files
@@ -33,13 +33,11 @@ if (!(FileExist(AhkFolder))) { ; Does AHK-Directory exist?
 }
 
 if ((!FileExist(SwapFolder))) { ; Does Working directory read from INI-File exist?
-	FileSelectFolder, SwapFolder, %A_WorkingDir% ,0, Select working directory for AHK-EXE-Swapper.,AHK-EXE-Swapper
+	FileSelectFolder, SwapFolder, ,0, Select working directory for AHK-EXE-Swapper.,AHK-EXE-Swapper
 }
 
-if (!FileExist("AHK-EXE-Swapper.ini")) {  ; Write INI-File if it does not exist
-	IniWrite, %AhkFolder%, AHK-EXE-Swapper.ini, Directory, AutoHotkey
-	IniWrite, %SwapFolder%, AHK-EXE-Swapper.ini, Directory, AHK-EXE-Swapper
-}
+IniWrite, %AhkFolder%, AHK-EXE-Swapper.ini, Directory, AutoHotkey
+IniWrite, %SwapFolder%, AHK-EXE-Swapper.ini, Directory, AHK-EXE-Swapper
 
 AhkExe := AhkFolder "\AutoHotkey.exe"
 ImportFolder := SwapFolder . "\Import"
