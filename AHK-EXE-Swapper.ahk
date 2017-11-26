@@ -11,8 +11,8 @@ ToDo:
 ;MsgBox % A_AhkVersion
 ;MsgBox % "Starting with " A_AhkPath
 
-DebugMode := 1
-Version := "V1.1"
+DebugMode := 0
+Version := "V1.2"
 
 MismatchWarning := 0		; Is there a version mismatch between A32/U32/U64 versions and / or AutoHotkey.exe?
 CurrentVersion := 0			; Current version of AutoHotkey.exe in Program Files
