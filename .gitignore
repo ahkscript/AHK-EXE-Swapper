@@ -5,6 +5,7 @@
 *.scc
 *.png
 *.tmp.*
+SciTE.properties
 Setup.ahk
 !Setup*.exe
 !AHK-EXE-Swapper.exe
