@@ -18,10 +18,10 @@ Because whilst editors such as SciTE4AutoHotkey allow you to choose which EXE to
 </table>
 
 
-##How?...
-####...Do I get it?
+## How?...
+#### ...Do I get it?
 If you are an end-user, simply download AHK-EXE-Swapper.exe from [here](https://github.com/evilC/AHK-EXE-Swapper/blob/master/AHK-EXE-Swapper.exe). You may place it anywhere.
-####...Do I use it?
+#### ...Do I use it?
 Double click the script to open the GUI.  
 This script maintains a *Library* of versions which you have imported or backed up which it stores in the folder *AHK-EXE-Swapper* in your AutoHotkey folder (*C:\Program Files\AutoHotkey*).  
 
@@ -34,7 +34,7 @@ To add a *Test* version (ie one Lexikos posted in a forum thread), download the 
 To swap *Version* (version number), Select a version from the Library and click *Replace with selected version*
 To swap *Variant* (ANSI/Unicode, x86/x64), Click the buttons at the top.
 
-####...Do I alter it?
+#### ...Do I alter it?
 The obvious caveat for a script like this is "How do you delete AutoHotkey.exe if you are running a script using it?"  
 The obvious answer is "Compile the script", but this leaves you with how to debug or work on the script (either without a dubugger, or with) without having to compile it for each run.  
 This project includes two methods to circumvent this issue:  
